@@ -1,0 +1,1897 @@
+---
+title: Custom Solution 트랙 가이드
+description: 솔루션 개발부터 엣지 설치까지 mellerikat의 핵심 기능을 End-to-End로 체험해보세요.
+pagination_next: null
+pagination_prev: null
+---
+
+import React, { useState, useEffect, useRef } from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import Head from '@docusaurus/Head';
+
+export default function QuickStartGuidePage() {
+  return (
+    <>
+      <Head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css" />
+        <style>
+          {`
+            .quick-start-guide {
+              font-family: var(--ifm-font-family-base);
+              line-height: var(--ifm-line-height-base);
+              color: black; /* var(--ifm-color-gray-800); */
+              background-color: var(--ifm-color-gray-100);
+            }
+
+            .quick-start-guide .container {
+              max-width: 1100px;
+              margin: 0 auto;
+              padding: 0 2rem;
+            }
+
+            .quick-start-guide .hero {
+              background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-link-hover-color) 100%);
+              color: white;
+              padding: 5rem 0;
+              margin-bottom: 3rem;
+            }
+
+            .quick-start-guide .hero-content {
+              max-width: 80rem;
+              margin: 0 auto;
+              text-align: center;
+            }
+
+            .quick-start-guide .hero h1 {
+              font-size: 3.2rem;
+              margin-bottom: 1.5rem;
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .hero p {
+              font-size: 1.8rem;
+              opacity: 0.9;
+              margin-bottom: 0;
+            }
+
+            .quick-start-guide .overview {
+              background-color: white;
+              border-radius: 1.2rem;
+              box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.05);
+              margin-bottom: 3rem;
+              padding: 3rem;
+            }
+
+            .quick-start-guide .overview h2 {
+              color: var(--ifm-color-primary);
+              font-size: 2.4rem;
+              margin-bottom: 2rem;
+              padding-bottom: 1rem;
+              border-bottom: 0.1rem solid var(--ifm-color-gray-200);
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .overview-intro {
+              margin-bottom: 2.5rem;
+              font-size: 1.6rem;
+              line-height: 1.6;
+            }
+
+            /* ALO 솔루션 개발 지원 도구 스타일 - 신규 추가 */
+            .quick-start-guide .alo-tools-section {
+              background-color: rgba(238, 54, 52, 0.03);
+              border-radius: 1.2rem;
+              padding: 2.5rem;
+              margin-bottom: 3rem;
+              box-shadow: 0 0.3rem 0.8rem rgba(0,0,0,0.05);
+              border: 0.1rem solid rgba(238, 54, 52, 0.1);
+            }
+
+            .quick-start-guide .alo-tools-header {
+              display: flex;
+              align-items: center;
+              margin-bottom: 1.8rem;
+            }
+
+            .quick-start-guide .alo-tools-header i {
+              font-size: 2.2rem;
+              color: var(--ifm-color-primary);
+              margin-right: 1.2rem;
+            }
+
+            .quick-start-guide .alo-tools-header h3 {
+              font-size: 2rem;
+              color: var(--ifm-color-primary);
+              margin: 0;
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .alo-tools-content p {
+              font-size: 1.6rem;
+              line-height: 1.6;
+              margin-bottom: 2rem;
+            }
+
+            /* 탭 스타일 */
+            .quick-start-guide .alo-tools-tabs {
+              margin-bottom: 2rem;
+              box-shadow: 0 0.2rem 0.6rem rgba(0,0,0,0.05);
+              border-radius: 1rem;
+              overflow: hidden;
+            }
+
+            .quick-start-guide .alo-tools-tab-header {
+              display: flex;
+              background-color: white;
+              border-bottom: 0.1rem solid rgba(0, 0, 0, 0.1);
+            }
+
+            .quick-start-guide .alo-tab-btn {
+              flex: 1;
+              padding: 1.5rem;
+              font-size: 1.6rem;
+              font-weight: 500;
+              text-align: center;
+              background: none;
+              border: none;
+              cursor: pointer;
+              color: var(--ifm-color-gray-700);
+              transition: all 0.3s ease;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 0.8rem;
+              border-bottom: 0.3rem solid transparent;
+            }
+
+            .quick-start-guide .alo-tab-btn i {
+              font-size: 1.8rem;
+            }
+
+            .quick-start-guide .alo-tab-btn.active {
+              color: var(--ifm-color-primary);
+              border-bottom-color: var(--ifm-color-primary);
+              background-color: rgba(238, 54, 52, 0.05);
+            }
+
+            .quick-start-guide .alo-tab-btn:hover:not(.active) {
+              background-color: rgba(0, 0, 0, 0.03);
+              color: var(--ifm-color-gray-900);
+            }
+
+            .quick-start-guide .alo-tools-tab-content {
+              background-color: white;
+              transition: all 0.3s ease;
+            }
+
+            .quick-start-guide .alo-tool-card {
+              padding: 2rem;
+              transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .quick-start-guide .alo-tool-header {
+              display: flex;
+              align-items: center;
+              margin-bottom: 1.5rem;
+            }
+
+            .quick-start-guide .alo-tool-icon {
+              font-size: 3.2rem;
+              color: var(--ifm-color-primary);
+              margin-right: 1.5rem;
+              display: flex;
+              align-items: center;
+            }
+
+            .quick-start-guide .alo-tool-details {
+              flex: 1;
+            }
+
+            .quick-start-guide .alo-tool-details h4 {
+              font-size: 1.8rem;
+              color: var(--ifm-color-gray-900);
+              margin: 0 0 1rem 0;
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .alo-tool-details p {
+              font-size: 1.5rem;
+              margin-bottom: 1.5rem;
+              color: var(--ifm-color-gray-700);
+              line-height: 1.6;
+            }
+
+            .quick-start-guide .alo-tool-templates {
+              display: flex;
+              flex-direction: column;
+              gap: 0.8rem;
+              margin-top: 2rem;
+            }
+
+            .quick-start-guide .template-item {
+              display: flex;
+              flex-direction: column; /* 세로로 title과 content를 배치 */
+              font-size: 1.4rem;
+              padding: 0.8rem 1.2rem;
+              border-radius: 0.6rem;
+              background-color: rgba(238, 54, 52, 0.03);
+              transition: transform 0.2s ease;
+            }
+
+            .quick-start-guide .template-item:hover {
+              transform: translateX(0.3rem);
+            }
+
+            .quick-start-guide .template-title {
+              margin: 0 0 0.5rem 0; /* 아래쪽에만 간격 추가 */
+              font-size: 1.6rem;
+            }
+
+            .quick-start-guide .template-content {
+              display: flex; /* 가로로 badge와 bullets 배치 */
+              align-items: flex-start;
+              gap: 0.8rem;
+            }
+
+            .quick-start-guide .template-badge {
+              padding: 0.3rem 0.8rem;
+              border-radius: 0.4rem;
+              font-weight: 500;
+              font-size: 1.2rem;
+              min-width: 4.5rem;
+              text-align: center;
+            }
+
+            .quick-start-guide .template-badge.tcr {
+              background-color: #e3f2fd;
+              color: #1976d2;
+            }
+
+            .quick-start-guide .template-badge.vad {
+              background-color: #e8f5e9;
+              color: #2e7d32;
+            }
+
+            .quick-start-guide .template-badge.fsd {
+              background-color: #fff3e0;
+              color: #e65100;
+            }
+
+            .quick-start-guide .template-bullets {
+              margin: 0;
+              padding-left: 0;
+              list-style-type: none;
+              flex: 1; /* 남은 공간을 채우도록 */
+            }
+
+            .quick-start-guide .template-bullets li {
+              margin-bottom: 0.4rem;
+            }
+
+            .quick-start-guide .template-desc {
+              color: var(--ifm-color-gray-700);
+            }
+
+            /* mellerihub 특성 아이템 */
+            .quick-start-guide .mellerihub-features {
+              display: flex;
+              flex-direction: column;
+              gap: 1.2rem;
+              margin-top: 2rem;
+            }
+
+            .quick-start-guide .feature-item {
+              display: flex;
+              align-items: center;
+              padding: 1rem 1.5rem;
+              background-color: rgba(238, 54, 52, 0.03);
+              border-radius: 0.6rem;
+              font-size: 1.5rem;
+              transition: transform 0.2s ease;
+            }
+
+            .quick-start-guide .feature-item:hover {
+              transform: translateX(0.3rem);
+            }
+
+            .quick-start-guide .feature-item i {
+              color: var(--ifm-color-primary);
+              margin-right: 1.2rem;
+              font-size: 1.8rem;
+            }
+
+            .quick-start-guide .alo-tools-recommendation {
+              background-color: white;
+              padding: 1.8rem;
+              border-radius: 0.8rem;
+              margin-top: 1.5rem;
+            }
+
+            .quick-start-guide .alo-tools-recommendation h4 {
+              font-size: 1.6rem;
+              color: var(--ifm-color-primary);
+              margin: 0 0 1.2rem 0;
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .alo-tools-recommendation ul {
+              margin: 0;
+              padding-left: 2rem;
+            }
+
+            .quick-start-guide .alo-tools-recommendation li {
+              margin-bottom: 0.8rem;
+              font-size: 1.4rem;
+              color: var(--ifm-color-gray-800);
+            }
+
+            .quick-start-guide .alo-tools-recommendation li strong {
+              color: var(--ifm-color-primary);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .requirement-section {
+              background-color: white;
+              border-radius: 1rem;
+              box-shadow: 0 0.3rem 1rem rgba(0,0,0,0.05);
+              padding: 2.2rem;
+              margin-bottom: 2.2rem;
+              border-left: 0.5rem solid var(--ifm-color-primary);
+            }
+
+            .quick-start-guide .requirement-header {
+              display: flex;
+              align-items: center;
+              margin-bottom: 1.5rem;
+            }
+
+            .quick-start-guide .requirement-header i {
+              font-size: 2rem;
+              color: var(--ifm-color-primary);
+              margin-right: 1.2rem;
+            }
+
+            .quick-start-guide .requirement-header h3 {
+              font-size: 1.8rem;
+              color: var(--ifm-color-primary);
+              margin: 0;
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .requirement-content {
+              padding-left: 3.5rem;
+            }
+
+            .quick-start-guide .requirement-content p {
+              margin-bottom: 1.2rem;
+              font-size: 1.6rem;
+              line-height: 1.6;
+            }
+
+            .quick-start-guide .requirement-content ul {
+              list-style-type: none;
+              margin-bottom: 1.5rem;
+              padding-left: 0;
+            }
+
+            .quick-start-guide .requirement-content ul li {
+              position: relative;
+              padding-left: 2rem;
+              margin-bottom: 1rem;
+              line-height: 1.6;
+              font-size: 1.6rem;
+            }
+
+            .quick-start-guide .requirement-content ul li::before {
+              content: "•";
+              position: absolute;
+              left: 0;
+              color: var(--ifm-color-primary);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .process-overview {
+              background-color: rgba(238, 54, 52, 0.05);
+              padding: 2.5rem;
+              border-radius: 1rem;
+              margin: 3rem 0;
+            }
+
+            .quick-start-guide .process-overview h3 {
+              color: var(--ifm-color-primary);
+              font-size: 1.8rem;
+              margin-bottom: 2rem;
+              text-align: center;
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            /* 프로세스 플로우 재설계 */
+            .quick-start-guide .process-flow {
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              justify-content: center;
+              gap: 1.2rem;
+            }
+
+            .quick-start-guide .process-item {
+              display: flex;
+              align-items: center;
+            }
+
+            .quick-start-guide .process-step {
+              display: flex;
+              align-items: center;
+              background-color: rgba(238, 54, 52, 0.1);
+              border-radius: 3rem;
+              padding: 0.5rem 1.2rem 0.5rem 0.5rem;
+              box-shadow: 0 0.2rem 0.4rem rgba(0,0,0,0.1);
+            }
+
+            .quick-start-guide .process-number {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 2.4rem;
+              height: 2.4rem;
+              background-color: var(--ifm-color-primary);
+              color: white;
+              border-radius: 50%;
+              font-size: 1.4rem;
+              font-weight: 500;
+              margin-right: 0.8rem;
+            }
+
+            .quick-start-guide .process-text {
+              font-size: 1.5rem;
+              font-weight: 500;
+              color: var(--ifm-color-gray-800);
+              white-space: nowrap;
+            }
+
+            .quick-start-guide .process-arrow {
+              color: var(--ifm-color-primary);
+              font-size: 1.6rem;
+              font-weight: 500;
+            }
+
+            /* 단계 네비게이션 재설계 */
+            .quick-start-guide .step-navigation {
+              position: sticky;
+              top: 6rem;
+              background-color: white;
+              z-index: 10;
+              padding: 1.5rem 0;
+              margin-bottom: 3rem;
+              border-radius: 1rem;
+              box-shadow: 0 0.4rem 1rem rgba(0,0,0,0.08);
+            }
+
+            .quick-start-guide .step-nav-container {
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: center;
+              gap: 0.8rem;
+              padding: 0 1rem;
+            }
+
+            .quick-start-guide .step-nav-item {
+              display: flex;
+              align-items: center;
+              padding: 1rem 1.5rem;
+              border-radius: 5rem;
+              background-color: var(--ifm-color-gray-100);
+              text-decoration: none;
+              color: var(--ifm-color-gray-800);
+              font-size: 1.5rem;
+              font-weight: 400;
+              transition: all 0.3s ease;
+            }
+
+            .quick-start-guide .step-nav-item:hover {
+              background-color: rgba(238, 54, 52, 0.08);
+              color: var(--ifm-color-primary);
+            }
+
+            .quick-start-guide .step-nav-item.active {
+              background-color: var(--ifm-color-primary);
+              color: white;
+            }
+
+            .quick-start-guide .step-nav-number {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 2.5rem;
+              height: 2.5rem;
+              background-color: white;
+              color: var(--ifm-color-primary);
+              border-radius: 50%;
+              font-size: 1.4rem;
+              font-weight: 500;
+              margin-right: 0.8rem;
+            }
+
+            .quick-start-guide .step-nav-item.active .step-nav-number {
+              background-color: white;
+              color: var(--ifm-color-primary);
+            }
+
+            .quick-start-guide .step-nav-text {
+              white-space: nowrap;
+            }
+
+            /* 스텝 카드 재설계 */
+            .quick-start-guide .step-card {
+              background-color: white;
+              border-radius: 1.2rem;
+              overflow: hidden;
+              box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.05);
+              margin-bottom: 3rem;
+            }
+
+            .quick-start-guide .step-header {
+              display: flex;
+              align-items: center;
+              padding: 2rem 3rem;
+              background: linear-gradient(to right, var(--ifm-color-primary), var(--ifm-link-hover-color));
+              color: white;
+            }
+
+            .quick-start-guide .step-number-container {
+              margin-right: 2rem;
+            }
+
+            .quick-start-guide .step-number {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 4.5rem;
+              height: 4.5rem;
+              background-color: white;
+              color: var(--ifm-color-primary);
+              border-radius: 50%;
+              font-size: 2rem;
+              font-weight: 500;
+            }
+
+            .quick-start-guide .step-title {
+              flex: 1;
+            }
+
+            .quick-start-guide .step-title h2 {
+              font-size: 2rem;
+              margin: 0 0 0.8rem 0;
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .step-title p {
+              margin: 0;
+              opacity: 0.9;
+              font-size: 1.6rem;
+            }
+
+            .quick-start-guide .step-body {
+              padding: 2.5rem 3rem;
+            }
+
+            .quick-start-guide .step-section {
+              margin-bottom: 2.5rem;
+            }
+
+            .quick-start-guide .step-section h3 {
+              font-size: 1.8rem;
+              margin-bottom: 1.5rem;
+              color: var(--ifm-color-primary);
+              display: flex;
+              align-items: center;
+              font-family: var(--ifm-font-family-headline);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .step-section h3 i {
+              margin-right: 1rem;
+            }
+
+            .quick-start-guide .step-list {
+              list-style-type: none;
+              margin: 0 0 2rem 0;
+              padding-left: 1.5rem;
+            }
+
+            .quick-start-guide .step-description {
+              font-size: 1.6rem;
+            }
+
+            .quick-start-guide .step-list li {
+              position: relative;
+              padding-left: 2.5rem;
+              margin-bottom: 1.2rem;
+              font-size: 1.6rem;
+              line-height: 1.6;
+            }
+
+            .quick-start-guide .step-list li::before {
+              content: "•";
+              position: absolute;
+              left: 0.5rem;
+              color: var(--ifm-color-primary);
+              font-weight: bold;
+              font-size: 1.8rem;
+            }
+
+            .quick-start-guide .step-list li strong {
+              color: var(--ifm-color-primary);
+              font-weight: 500;
+            }
+
+            .quick-start-guide .step-list li ul {
+              list-style-type: none;
+              margin: 1rem 0 1rem 0;
+              padding-left: 0;
+            }
+
+            .quick-start-guide .step-list li ul li {
+              margin-bottom: 0.8rem;
+              padding-left: 2rem;
+              font-size: 1.5rem;
+            }
+
+            .quick-start-guide .step-list li ul li::before {
+              content: "-";
+              font-size: 1.4rem;
+            }
+
+            /* 이미지 컨테이너 */
+            .quick-start-guide .image-container {
+              margin: 2rem 0;
+              border-radius: 1rem;
+              overflow: hidden;
+              box-shadow: 0 0.4rem 1rem rgba(0,0,0,0.1);
+              width: 90%;
+              margin-left: auto;
+              margin-right: auto;
+            }
+
+            .quick-start-guide .image-container img {
+              width: 100%;
+              display: block;
+            }
+
+            .quick-start-guide .image-caption {
+              text-align: center;
+              padding: 1rem;
+              background-color: rgba(238, 54, 52, 0.1);
+              color: var(--ifm-color-gray-800);
+              font-size: 1.5rem;
+              font-weight: 500;
+              border-bottom: 1px solid var(--ifm-color-gray-200);
+            }
+
+            /* 코드 블록 */
+            .quick-start-guide .code-container {
+              background-color: #282c34;
+              color: white;
+              border-radius: 1rem;
+              margin: 2rem 0;
+              position: relative;
+              overflow: hidden;
+              width: 90%;
+              margin-left: auto;
+              margin-right: auto;
+            }
+
+            .quick-start-guide .code-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 1rem 1.5rem;
+              background-color: rgba(255, 255, 255, 0.1);
+              font-size: 1.4rem;
+            }
+
+            .quick-start-guide .code-container pre {
+              margin: 0;
+              padding: 1.5rem;
+              font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+              font-size: 1.5rem;
+              line-height: 1.5;
+              overflow-x: auto;
+            }
+
+            .quick-start-guide .code-container .copy-btn {
+              background-color: transparent;
+              border: none;
+              color: white;
+              cursor: pointer;
+              font-size: 1.4rem;
+              transition: all 0.2s ease;
+            }
+
+            .quick-start-guide .code-container .copy-btn:hover {
+              color: var(--ifm-color-primary);
+            }
+
+            .quick-start-guide .code-note {
+              display: block;
+              font-size: 1.4rem;
+              color: var(--ifm-color-gray-700);
+              margin-top: 0.5rem;
+              font-style: italic;
+            }
+
+            /* 노트 박스 */
+            .quick-start-guide .note-box {
+              border-left: 0.4rem solid;
+              padding: 1.5rem 2rem;
+              border-radius: 0.5rem;
+              margin: 2rem 0;
+              font-size: 1.5rem;
+              line-height: 1.6;
+              width: 90%;
+              margin-left: auto;
+              margin-right: auto;
+            }
+
+            .quick-start-guide .tip-box {
+              border-color: #52b788;
+              background-color: rgba(82, 183, 136, 0.1);
+            }
+
+            .quick-start-guide .tip-box::before {
+              content: "💡 팁";
+              display: block;
+              font-weight: 500;
+              margin-bottom: 0.5rem;
+              color: #52b788;
+            }
+
+            .quick-start-guide .warning-box {
+              border-color: #f8551f;
+              background-color: rgba(248, 85, 31, 0.1);
+            }
+
+            .quick-start-guide .warning-box::before {
+              content: "⚠️ 주의사항";
+              display: block;
+              font-weight: 500;
+              margin-bottom: 0.5rem;
+              color: #f8551f;
+            }
+
+            .quick-start-guide .info-box {
+              border-color: #009CDE;
+              background-color: rgba(0, 156, 222, 0.1);
+            }
+
+            .quick-start-guide .info-box::before {
+              content: "ℹ️ 정보";
+              display: block;
+              font-weight: 500;
+              margin-bottom: 0.5rem;
+              color: #009CDE;
+            }
+
+            /* 네비게이션 버튼 */
+            .quick-start-guide .step-navigation-buttons {
+              display: flex;
+              justify-content: space-between;
+              margin-top: 3rem;
+              padding-top: 2rem;
+              border-top: 0.1rem solid var(--ifm-color-gray-200);
+            }
+
+            .quick-start-guide .prev-btn,
+            .quick-start-guide .next-btn,
+            .quick-start-guide .home-btn {
+              display: inline-flex;
+              align-items: center;
+              padding: 1rem 2rem;
+              border-radius: 5rem;
+              text-decoration: none;
+              font-weight: 500;
+              font-size: 1.5rem;
+              transition: all 0.3s ease;
+            }
+
+            .quick-start-guide .prev-btn {
+              color: var(--ifm-color-primary);
+              background-color: transparent;
+              border: 0.2rem solid var(--ifm-color-primary);
+            }
+
+            .quick-start-guide .prev-btn i {
+              margin-right: 0.8rem;
+            }
+
+            .quick-start-guide .next-btn {
+              color: white;
+              background-color: var(--ifm-color-primary);
+            }
+
+            .quick-start-guide .next-btn i {
+              margin-left: 0.8rem;
+            }
+
+            .quick-start-guide .home-btn {
+              color: white;
+              background-color: var(--ifm-color-gray-700);
+            }
+
+            .quick-start-guide .home-btn i {
+              margin-left: 0.8rem;
+            }
+
+            .quick-start-guide .prev-btn:hover,
+            .quick-start-guide .next-btn:hover,
+            .quick-start-guide .home-btn:hover {
+              transform: translateY(-0.2rem);
+            }
+
+            .quick-start-guide .prev-btn:hover {
+              background-color: var(--ifm-color-primary);
+              color: white;
+            }
+
+            .quick-start-guide .next-btn:hover {
+              background-color: var(--ifm-link-hover-color);
+            }
+
+            .quick-start-guide .home-btn:hover {
+              background-color: var(--ifm-color-gray-800);
+            }
+
+            /* Footer */
+            .quick-start-guide footer {
+              background-color: white;
+              padding: 4rem 0;
+              margin-top: 5rem;
+              border-top: 0.1rem solid var(--ifm-color-gray-200);
+            }
+
+            .quick-start-guide .footer-content {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1.5rem;
+            }
+
+            .quick-start-guide .footer-logo {
+              font-size: 2.4rem;
+              font-weight: 500;
+              color: var(--ifm-color-primary);
+              font-family: var(--ifm-font-family-headline);
+            }
+
+            .quick-start-guide .footer-links {
+              display: flex;
+              gap: 2rem;
+            }
+
+            .quick-start-guide .footer-links a {
+              color: var(--ifm-color-gray-800);
+              text-decoration: none;
+              font-size: 1.6rem;
+            }
+
+            .quick-start-guide .footer-links a:hover {
+              color: var(--ifm-color-primary);
+            }
+
+            .quick-start-guide .copyright {
+              text-align: center;
+              color: var(--ifm-color-gray-600);
+              font-size: 1.4rem;
+            }
+
+            /* 반응형 설계 */
+            @media (max-width: 1200px) {
+              html {
+                font-size: var(--ifm-font-size-base-60);
+              }
+            }
+
+            @media (max-width: 996px) {
+              .quick-start-guide .process-flow {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 2rem;
+              }
+
+              .quick-start-guide .process-arrow {
+                transform: rotate(90deg);
+                margin: 0.6rem 0;
+              }
+
+              .quick-start-guide .step-title h2 {
+                font-size: 1.8rem;
+              }
+
+              .quick-start-guide .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+              }
+
+              .quick-start-guide .step-nav-container {
+                flex-direction: column;
+              }
+
+              .quick-start-guide .step-nav-item {
+                width: 100%;
+              }
+            }
+
+            @media (max-width: 768px) {
+              .quick-start-guide .alo-tool-header {
+                flex-direction: column;
+                text-align: center;
+              }
+
+              .quick-start-guide .alo-tool-icon {
+                margin-right: 0;
+                margin-bottom: 1.5rem;
+                justify-content: center;
+              }
+
+              .quick-start-guide .alo-tab-btn {
+                font-size: 1.4rem;
+                padding: 1.2rem 0.5rem;
+              }
+
+              .quick-start-guide .template-content {
+                flex-direction: column; /* 작은 화면에서는 세로로 변경 */
+                align-items: flex-start;
+              }
+            }
+
+            @media (max-width: 480px) {
+              html {
+                font-size: var(--ifm-font-size-base-58);
+              }
+
+              .quick-start-guide .hero h1 {
+                font-size: 2.8rem;
+              }
+
+              .quick-start-guide .step-header {
+                flex-direction: column;
+                padding: 1.5rem;
+              }
+
+              .quick-start-guide .step-number-container {
+                margin-right: 0;
+                margin-bottom: 1.5rem;
+              }
+
+              .quick-start-guide .step-title {
+                text-align: center;
+              }
+
+              .quick-start-guide .step-navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+              }
+
+              .quick-start-guide .prev-btn,
+              .quick-start-guide .next-btn,
+              .quick-start-guide .home-btn {
+                justify-content: center;
+              }
+
+              .quick-start-guide .image-container,
+              .quick-start-guide .code-container,
+              .quick-start-guide .note-box {
+                width: 100%;
+              }
+            }
+          `}
+        </style>
+      </Head>
+      <BrowserOnly>
+        {() => <QuickStartGuide />}
+      </BrowserOnly>
+    </>
+  );
+}
+
+
+export const QuickStartGuide = () => {
+  // 활성화된 단계 상태 관리
+  const [activeStep, setActiveStep] = useState('step1');
+  // ALO 도구 탭 상태 관리
+  const [activeToolTab, setActiveToolTab] = useState('colab');
+
+  // 각 단계별 참조 생성
+  const stepRefs = {
+    step1: useRef(null),
+    step2: useRef(null),
+    step3: useRef(null),
+    step4: useRef(null),
+    step5: useRef(null),
+    step6: useRef(null),
+    step7: useRef(null),
+    step8: useRef(null),
+  };
+
+  // 단계 항목 클릭 핸들러
+  const handleStepClick = (e, stepId) => {
+    e.preventDefault();
+    const element = stepRefs[stepId]?.current;
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 100,
+        behavior: 'smooth'
+      });
+      setActiveStep(stepId);
+    }
+  };
+
+  // 코드 복사 핸들러
+  const handleCopyCode = (codeText) => {
+    navigator.clipboard.writeText(codeText).then(() => {
+      // 성공적으로 복사되었을 때의 로직
+    });
+  };
+
+  // 스크롤 감지 및 활성 단계 업데이트
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 150;
+
+      // 각 단계 요소의 위치 확인 및 활성 단계 설정
+      Object.entries(stepRefs).forEach(([stepId, ref]) => {
+        if (ref.current &&
+            scrollPosition >= ref.current.offsetTop &&
+            scrollPosition < (ref.current.offsetTop + ref.current.offsetHeight)) {
+          setActiveStep(stepId);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div className="quick-start-guide">
+      <section className="hero">
+        <div className="container">
+          <div className="hero-content">
+            <h1>Custom Solution 트랙 상세 가이드</h1>
+            <p>솔루션 개발부터 엣지 설치까지 mellerikat의 핵심 기능을 End-to-End로 체험해보세요.</p>
+          </div>
+        </div>
+      </section>
+
+      <div className="container">
+        {/* Overview Section */}
+        <section className="overview">
+          <h2>Custom Solution 트랙 개요</h2>
+
+          <div className="overview-intro">
+            <p>Custom Solution 트랙은 사용자가 직접 AI 솔루션을 개발하고, 엣지 설치까지 포함한 mellerikat의 전체 프로세스를 커스터마이징하며 경험할 수 있는 방법입니다. <br />
+            이 트랙은 Google Colab 템플릿을 활용하여 ALO 설치, 솔루션 개발 및 등록, Edge SDK를 통한 엣지 설정과 추론 과정을 단계별로 안내합니다. <br />
+            복잡한 설정을 최소화하며, mellerikat의 엔드투엔드 워크플로우를 깊이 있게 체험할 수 있습니다. 주요 단계는 다음과 같습니다:</p>
+            <ul>
+                <li><strong>ALO 설치 및 솔루션 개발/등록:</strong> Google Colab 템플릿을 통해 ALO를 설치하고 솔루션을 개발하여 등록</li>
+                <li><strong>솔루션 확인:</strong> AI Conductor에서 등록된 솔루션 확인</li>
+                <li><strong>데이터 준비:</strong> 모델 학습에 필요한 데이터 업로드 (또는 샘플 데이터 활용)</li>
+                <li><strong>모델 학습:</strong> Edge Conductor에서 스트림을 생성하고 학습 요청</li>
+                <li><strong>모델 배포:</strong> 학습된 모델을 Edge App에 배포</li>                
+                <li><strong>엣지 설정 및 추론:</strong> Edge SDK를 통해 엣지 환경을 설정하고 추론 결과 확인</li>                
+            </ul>
+            <p>이 과정을 통해 사용자는 mellerikat의 유연성과 확장성을 이해하고, 자체 비즈니스 문제를 해결하기 위한 맞춤형 AI 솔루션을 설계할 수 있습니다.</p>
+          </div>
+
+          {/* ALO 솔루션 개발 지원 도구 - 새로 추가되는 섹션 */}
+          <div className="alo-tools-section">
+            <div className="alo-tools-header">
+              <i className="fas fa-tools"></i>
+              <h3>ALO 솔루션 개발 지원 도구</h3>
+            </div>
+            <div className="alo-tools-content">
+              <p>Custom Solution 트랙에서는 사용자가 ALO 사용법을 익히고 솔루션을 개발하는 과정의 이해를 돕기 위해 2가지 지원 도구를 제공합니다.<br />
+              Google Colab 템플릿은 본 트랙을 수행하기 위한 필수 도구로 Google Colab 분석 환경에서 대화형 노트북 형태의 템플릿(ipynb)의 형태로 가이드하고 있습니다.
+              해당 템플릿에서는 ALO 개발 환경 설정부터 솔루션 개발 및 등록을 하고, 이후 Edge SDK를 통해 가상의 Edge App 추론을 수행할 수 있으며, mellerikat에서 제공하는 기존 솔루션(<a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_contents/tcr/" target="_blank">TCR</a>, <a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_contents/vad/" target="_blank">VAD</a>)을 활용하거나 본인이 이미 작성해둔 개발 코드를 기반으로 솔루션을 개발(FSD)하는 기능을 제공하고 있습니다. 
+              템플릿의 자세한 내용은 아래를 참고하시고, ALO에 대한 자세한 설명은 <a href="https://mellerikat.com/user_guide/data_scientist_guide/alo/" target="_blank">ALO 메뉴얼</a>를 참고하세요.<br />
+              <a href="https://github.com/mellerihub/Awesome-AISolutions-for-mellerikat/tree/main" target="_blank">Mellerihub</a>는 다양한 비즈니스에서 활용되고 있는 AI 솔루션을 아카이빙 해둔 Github 저장소입니다. 기존 솔루션 외에 사용자가 풀고자 하는 문제에 적합한 솔루션이 있는지 탐색해보고 솔루션을 활용해보세요.</p>
+
+              <div className="alo-tools-tabs">
+                <div className="alo-tools-tab-header">
+                  <button
+                    className={`alo-tab-btn ${activeToolTab === 'colab' ? 'active' : ''}`}
+                    onClick={() => setActiveToolTab('colab')}
+                  >
+                    <i className="fab fa-google"></i> Google Colab 템플릿
+                  </button>
+                  <button
+                    className={`alo-tab-btn ${activeToolTab === 'mellerihub' ? 'active' : ''}`}
+                    onClick={() => setActiveToolTab('mellerihub')}
+                  >
+                    <i className="fab fa-github"></i> mellerihub
+                  </button>
+                </div>
+
+                <div className="alo-tools-tab-content">
+                  {activeToolTab === 'colab' && (
+                    <div className="alo-tool-card">
+                      <div className="alo-tool-details">
+                        <div className="alo-tool-header">
+                          <div className="alo-tool-icon">
+                            <i className="fab fa-google"></i>
+                          </div>
+                          <h4>Google Colab 템플릿</h4>
+                        </div>
+                        <p>본 트랙의 필수 도구로 Google Colab 분석 환경에서 바로 실행할 수 있는 템플릿으로 ALO 설치 및 구조의 핵심 개념을 단계별로 학습 가능하며, 솔루션 개발부터 등록까지의 전체 과정까지 가이드로 제공합니다.</p>
+                        <div className="alo-tool-templates">
+                        <div className="template-item">
+                            <h3 className="template-title">Tabular Classification & Regression</h3>
+                            <div className="template-content">
+                              <span className="template-badge tcr">TCR</span>
+                              <ul className="template-bullets">
+                                <li>- 정형 데이터를 대상으로 ML 기반 분류 예측을 위한 AI 솔루션 개발 및 등록 과정을 안내하는 템플릿입니다.</li>
+                                <li>- 템플릿에는 신용카드 고객 이탈 탐지 문제를 예시로 코드가 작성되어 있습니다.</li>
+                                <li>
+                                  - <a href="https://colab.research.google.com/drive/1p7gkGYnZhZuUIQu_PGA_AK8hi5YsKWbo?usp=drive_link" target="_blank">Colab으로 가기</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div className="template-item">
+                            <h3 className="template-title">Visual Anomaly Detection</h3>
+                            <div className="template-content">
+                              <span className="template-badge vad">VAD</span>
+                              <ul className="template-bullets">
+                                <li>- 이미지 데이터를 대상으로 DL 기반 이상치 탐지를 위한 AI 솔루션 개발 및 등록 과정을 안내하는 템플릿입니다.</li>
+                                <li>- 템플릿에는 도시락 이미지로 이상 탐지를 수행하는 문제를 예시로 코드가 작성되어 있습니다.</li>
+                                <li>
+                                  - <a href="https://colab.research.google.com/drive/1R7T7myhJidknPujLRyJaVIBrnBiLVYGX?usp=drive_link" target="_blank">Colab으로 가기</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div className="template-item">
+                            <h3 className="template-title">Free-Style Development</h3>
+                            <div className="template-content">
+                              <span className="template-badge fsd">FSD</span>
+                              <ul className="template-bullets">
+                                <li>- 기존에 사용자가 작성한 모델링 코드를 ALO 구조로 변환하는 방법을 안내하는 템플릿입니다.</li>
+                                <li>- 템플릿에는 와인 품질 예측 문제를 예시로 코드가 작성되어 있습니다.</li>
+                                <li>
+                                  - <a href="https://colab.research.google.com/drive/1BUyn_lPXfU1Mt_JigLCsGpC-VFIRNfOt?usp=drive_link" target="_blank">Colab으로 가기</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeToolTab === 'mellerihub' && (
+                    <div className="alo-tool-card">
+                      <div className="alo-tool-details">
+                        <div className="alo-tool-header">
+                          <div className="alo-tool-icon">
+                            <i className="fab fa-github"></i>
+                          </div>
+                          <h4>mellerihub</h4>
+                        </div>
+                          <p>
+                            다양한 비즈니스 문제를 해결하는 AI 솔루션을 아카이빙한 GitHub 저장소입니다. 산업별, 문제 유형별로 적합한 최신 알고리즘 및 고도화 방법론을 Mellerikat ALO Framework에 최적화된 형태로 제공하여 솔루션 개발 시간을 획기적으로 단축합니다.
+                            Mellerikat MLOps 플랫폼에 특화된 AI 솔루션을 체계적으로 보관하여, 사용자가 자신의 데이터에 맞게 고품질 AI 솔루션을 신속하고 효율적으로 개발할 수 있도록 지원합니다.
+                            모든 솔루션은 Mellerikat ALO 프레임워크에 최적화되어 있어 Mellerikat MLOps 환경에서 즉시 배포하고 운영할 수 있습니다.
+                            특히 주목할 점은 다양한 도메인의 난제들을 해결하기 위해 적용된 최적화된 AI 솔루션이 여러 파트너십을 통해 지속적으로 업데이트되며,
+                            최신 주요 AI 모델은 주기적으로 Mellerikat ALO Framework로 마이그레이션되어 MLOps 환경에서 즉시 운영이 가능합니다.
+                          </p>
+                        <div className="mellerihub-features">
+                          <div className="feature-item">
+                            <i className="fas fa-sitemap"></i>
+                            <span>산업별, 문제 유형별로 적합한 최신 알고리즘 및 고도화 방법론을 제공합니다.</span>
+                          </div>
+                          <div className="feature-item">
+                            <i className="fas fa-code-branch"></i>
+                            <span>mellerihub에 등록된 솔루션은 ALO 형태로 작성되어 있어 솔루션 개발 시간을 단축 시켜줍니다.</span>
+                          </div>
+                          <div className="feature-item">
+                            <i className="fas fa-cogs"></i>
+                            <span>필요에 따라 솔루션을 수정하여 자체 비즈니스 요구에 맞게 조정 가능합니다.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="alo-tools-recommendation">
+                <h4>상황별 활용 방법</h4>
+                <ul>
+                  <li><strong>ALO 입문자:</strong> TCR/VAD 템플릿으로 기본 구조를 이해하고 단계별 가이드를 따라 실습하며 개념을 학습하길 권장합니다.</li>
+                  <li><strong>기존 모델 코드 보유:</strong> TCR/VAD 템플릿으로 기본 구조를 이해하고 단계별 가이드를 따라 실습하며 개념을 학습하길 권장합니다.</li>
+                  <li><strong>특정 산업/문제 해결:</strong> 풀고자 하는 문제에 적합한 방법론을 찾고 있다면 mellerihub를 사용하길 권장합니다.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Requirement Sections */}
+          <div className="requirement-section">
+            <div className="requirement-header">
+              <i className="fas fa-book"></i>
+              <h3>핵심 개념</h3>
+            </div>
+            <div className="requirement-content">
+              <p>Quick Start 트랙을 진행하기 전에 다음 개념을 미리 알아두면 도움이 됩니다.</p>
+              <ul>
+                <li><strong><a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_conductor/ai_solution/">AI Solution</a>:</strong> 특정 비즈니스 케이스나 데이터에 적합한 문제를 해결하기 위해 작성된 AI 모델 코드입니다.</li>
+                <li><strong><a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_conductor/">AI Conductor</a>:</strong> 솔루션 탐색과 모델 관리를 위한 시스템입니다. 여기서 솔루션의 상세 정보를 확인하고 모델 학습 결과를 모니터링할 수 있습니다.</li>
+                <li><strong><a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/">Edge Conductor</a>:</strong> 모델 학습 요청, 배포, 엣지 앱 관리를 수행하는 시스템입니다. 데이터 업로드부터 추론 결과 확인까지 대부분의 작업이 이루어집니다.</li>
+                <li><strong><a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/streams/">Stream</a>:</strong> 데이터 처리부터 모델 학습, 배포까지의 전체 워크플로우를 관리하는 파이프라인입니다. 하나의 스트림은 하나의 솔루션과 연결됩니다.</li>
+                <li><strong><a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_app/">Edge App</a>:</strong> 학습된 모델이 배포되는 실행 환경입니다. 각 사용자에게는 기본적으로 2개의 Edge App이 제공됩니다.</li>
+                <li><strong>S3 버킷:</strong> Edge App이 클라우드에 설치되어 있는 경우, S3 버킷은 Edge App의 Input 경로 역할을 하여 Input 경로로 데이터를 전달하면 모델이 추론을 수행합니다.</li>
+                <li><strong><a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/dataset/">데이터셋(Dataset)</a>:</strong> 모델 학습과 추론에 사용되는 데이터입니다. 사용자는 자체 데이터를 업로드하거나 제공되는 샘플 데이터를 활용할 수 있습니다.</li>
+                <li><strong>학습(Training):</strong> 선택한 솔루션과 제공된 데이터를 기반으로 AI 모델을 생성하는 과정입니다.</li>
+                <li><strong>배포(Deployment):</strong> 학습된 모델을 Edge App에 설치하여 실제 추론이 가능하게 만드는 과정입니다.</li>
+                <li><strong>추론(Inference):</strong> 배포된 모델을 통해 새로운 데이터에 대한 예측을 수행하는 과정입니다.</li>
+                <li><strong><a href="https://mellerikat.com/user_guide/data_scientist_guide/alo/">ALO</a>:</strong> mellerikat의 솔루션 프레임워크로 AI 모델을 구조화하고 등록하기 위한 도구입니다.</li>
+                <li><strong>Edge SDK:</strong> 사용자가 엣지 환경을 직접 설정하고 추론을 실행할 수 있게 해주는 Edge App 소프투에어 개발키트입니다.</li>
+              </ul>
+              <p>위 개념들은 각 단계에서 중요한 역할을 하며, 가이드를 따라가며 자연스럽게 익힐 수 있습니다.</p>
+            </div>
+          </div>
+
+
+          <div className="requirement-section">
+            <div className="requirement-header">
+              <i className="fas fa-info-circle"></i>
+              <h3>제공 정보 및 기술적 요구사항</h3>
+            </div>
+            <div className="requirement-content">
+              <p>mellerikat 체험 서비스 신청이 승인되면, 아래 제공사항 정보를 이메일로 받게 됩니다. 또한 Custom Solution 트랙을 원활하게 체험하기 위해서는 아래 기술적 요구사항과 같은 환경이 필요합니다. 체험을 시작하기 전에 아래 요구사항을 확인하고 준비해주세요.</p>
+              <ul>
+                <li><strong>제공 정보:</strong> 체험 서비스 신청이 승인되면 AI Conductor 계정, Edge Conductor 계정, Edge App ID, AWS Access Key 및 Secret Access Key, S3 버킷 접근 경로를 이메일로 받습니다. 이 정보는 체험 과정에서 필수적이므로 안전하게 보관하세요.</li>
+                <li><strong>기술적 요구사항:</strong> AWS CLI가 설치된 분석 환경(Jupyter Notebook, Google Colab 등)과 웹 브라우저(Chrome 권장)가 필요합니다. 샘플 데이터가 제공되지만, 자체 데이터를 사용할 경우 최대 5GB 크기 제한을 고려하세요. 그리고 mellerihub를 사용하기 위해서는 Git이 설치되어 있어야 합니다.</li>                
+              </ul>
+            </div>
+          </div>          
+
+          <div className="requirement-section">
+            <div className="requirement-header">
+              <i className="fas fa-database"></i>
+              <h3>데이터 준비</h3>
+            </div>
+            <div className="requirement-content">
+              <p>mellerikat에서는 자체 데이터를 활용하여 솔루션을 개발하고 테스트할 수 있습니다. 다음 사항을 고려하여 데이터를 준비해주세요.</p>
+              <ul>
+                <li><strong>학습용 데이터:</strong> 솔루션 개발 및 모델 학습을 위한 데이터셋이 필요합니다. 실제 비즈니스 문제 해결 상황에 맞는 데이터를 준비하는 것이 좋습니다.</li>
+                <li><strong>추론용 데이터:</strong> 학습된 모델로 실제 추론을 수행할 데이터셋이 필요합니다.</li>
+                <li><strong>데이터 형식:</strong> 솔루션별로 지원하는 데이터 형식이 다를 수 있습니다. 일반적으로 CSV, JSON, 이미지 파일 등이 지원됩니다. 선택한 솔루션의 문서를 참조하여 적합한 형식을 확인하세요.</li>
+                <li><strong>데이터 크기:</strong> 체험 계정에는 최대 5GB의 저장 공간이 제공됩니다. 대용량 데이터셋을 사용할 경우 이 제한을 고려하세요.</li>
+              </ul>
+              <p>데이터가 준비되지 않은 경우, Google Colab 템플릿에서 제공하는 샘플 데이터를 활용하여 솔루션 개발 과정을 학습할 수 있습니다. 그러나 실제 비즈니스 환경에서의 경험을 위해서는 자체 데이터를 활용하는 것을 권장합니다.</p>
+            </div>
+          </div>
+
+          <div className="process-overview">
+            <h3>전체 체험 프로세스</h3>
+            <div className="process-flow">
+              {/* 프로세스 순서도 */}
+              <div className="process-item">
+                <span className="process-step">
+                  <span className="process-number">1</span>
+                  <span className="process-text">ALO 설치 및 Solution 개발/등록</span>
+                </span>
+              </div>
+              <div className="process-arrow">→</div>
+
+              <div className="process-item">
+                <span className="process-step">
+                  <span className="process-number">2</span>
+                  <span className="process-text">AI Solution 확인</span>
+                </span>
+              </div>
+              <div className="process-arrow">→</div>
+
+              <div className="process-item">
+                <span className="process-step">
+                  <span className="process-number">3</span>
+                  <span className="process-text">Edge Conductor 접속</span>
+                </span>
+              </div>
+              <div className="process-arrow">→</div>
+
+              <div className="process-item">
+                <span className="process-step">
+                  <span className="process-number">4</span>
+                  <span className="process-text">데이터셋 업로드</span>
+                </span>
+              </div>
+              <div className="process-arrow">→</div>
+
+              <div className="process-item">
+                <span className="process-step">
+                  <span className="process-number">5</span>
+                  <span className="process-text">Stream 생성</span>
+                </span>
+              </div>
+              <div className="process-arrow">→</div>
+
+              <div className="process-item">
+                <span className="process-step">
+                  <span className="process-number">6</span>
+                  <span className="process-text">학습 요청 및 결과 확인</span>
+                </span>
+              </div>
+              <div className="process-arrow">→</div>
+
+              <div className="process-item">
+                <span className="process-step">
+                  <span className="process-number">7</span>
+                  <span className="process-text">Edge SDK 실행 및 모델 배포</span>
+                </span>
+              </div>
+              <div className="process-arrow">→</div>
+
+              <div className="process-item">
+                <span className="process-step">
+                  <span className="process-number">8</span>
+                  <span className="process-text">추론 결과 확인</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Step Navigation */}
+        <div className="step-navigation">
+          <div className="step-nav-container">
+            <a
+              href="#step1"
+              className={`step-nav-item ${activeStep === 'step1' ? 'active' : ''}`}
+              onClick={(e) => handleStepClick(e, 'step1')}
+            >
+              <span className="step-nav-number">1</span>
+              <span className="step-nav-text">ALO 설치 및 Solution 개발/등록</span>
+            </a>
+            <a
+              href="#step2"
+              className={`step-nav-item ${activeStep === 'step2' ? 'active' : ''}`}
+              onClick={(e) => handleStepClick(e, 'step2')}
+            >
+              <span className="step-nav-number">2</span>
+              <span className="step-nav-text">AI Solution 확인</span>
+            </a>
+            <a
+              href="#step3"
+              className={`step-nav-item ${activeStep === 'step3' ? 'active' : ''}`}
+              onClick={(e) => handleStepClick(e, 'step3')}
+            >
+              <span className="step-nav-number">3</span>
+              <span className="step-nav-text">Edge Conductor 접속</span>
+            </a>
+            <a
+              href="#step4"
+              className={`step-nav-item ${activeStep === 'step4' ? 'active' : ''}`}
+              onClick={(e) => handleStepClick(e, 'step4')}
+            >
+              <span className="step-nav-number">4</span>
+              <span className="step-nav-text">데이터셋 업로드</span>
+            </a>
+            <a
+              href="#step5"
+              className={`step-nav-item ${activeStep === 'step5' ? 'active' : ''}`}
+              onClick={(e) => handleStepClick(e, 'step5')}
+            >
+              <span className="step-nav-number">5</span>
+              <span className="step-nav-text">Stream 생성</span>
+            </a>
+            <a
+              href="#step6"
+              className={`step-nav-item ${activeStep === 'step6' ? 'active' : ''}`}
+              onClick={(e) => handleStepClick(e, 'step6')}
+            >
+              <span className="step-nav-number">6</span>
+              <span className="step-nav-text">학습 요청 및 결과 확인</span>
+            </a>
+            <a
+              href="#step7"
+              className={`step-nav-item ${activeStep === 'step7' ? 'active' : ''}`}
+              onClick={(e) => handleStepClick(e, 'step7')}
+            >
+              <span className="step-nav-number">7</span>
+              <span className="step-nav-text">Edge SDK 실행 및 모델 배포</span>
+            </a>
+            <a
+              href="#step8"
+              className={`step-nav-item ${activeStep === 'step8' ? 'active' : ''}`}
+              onClick={(e) => handleStepClick(e, 'step8')}
+            >
+              <span className="step-nav-number">8</span>
+              <span className="step-nav-text">추론 결과 확인</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Step Content */}
+        <div className="step-content">
+          {/* Step 1 */}
+          <div id="step1" className="step-card" ref={stepRefs.step1}>
+            <div className="step-header">
+              <div className="step-number-container">
+                <span className="step-number">1</span>
+              </div>
+              <div className="step-title">
+                <h2>ALO 설치 및 Solution 개발/등록</h2>                
+              </div>
+            </div>
+
+            <div className="step-body">
+              <div className="step-section">
+                <h3><i className="fas fa-comment"></i> 단계 설명</h3>
+                <ol className="step-list">
+                  <p className="step-description"><a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_conductor/ai_solution/">AI 솔루션</a>을 개발하기 위해 Google Colab 템플릿 내 가이드를 따라 <a href="https://mellerikat.com/user_guide/data_scientist_guide/alo/">ALO</a>를 설치하고, ALO 규격에 맞춘 AI Solution 코드를 작성 후 등록까지 진행합니다.</p>                                      
+                </ol>
+                <h3><i className="fas fa-tasks"></i> 수행 단계</h3>
+                <ol className="step-list">
+                  <li>
+                    Google Colab 템플릿을 선택하세요.
+                    <ul>
+                        <li>ALO 입문자는 TCR 또는 VAD colab 템플릿으로 기본 구조를 이해하고 단계별 가이드를 따라 실습하는 것을 추천드립니다.</li>
+                        <li>기존 모델 코드를 보유하고 있다면 FSD colab 템플릿으로 개발된 코드를 ALO 구조로 변환하는 가이드를 따라 실습하는 것을 추천드립니다.</li>
+                    </ul>
+                  </li>
+                  <li>템플릿의 가이드를 따라 ALO를 설치하고 솔루션 코드를 작성합니다.</li>
+                  <li>개발 완료 후 템플릿 내 안내에 따라 AI Conductor에 솔루션을 등록합니다.</li>
+                </ol>
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">TCR colab 가이드 화면</div>
+                <img src="/try/images/try_mellerikat_guide/customer_guide/tcr_template.png" alt="TCR colab 가이드 화면" />
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">FSD colab 가이드 화면</div>
+                <img src="/try/images/try_mellerikat_guide/customer_guide/fsd_template.png" alt="FSD colab 가이드 화면" />
+              </div>
+            
+              <div className="step-navigation-buttons">
+                <a href="#step2" className="next-btn" onClick={(e) => handleStepClick(e, 'step2')}>
+                  다음 단계: AI Solution 확인 <i className="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 2 */}
+          <div id="step2" className="step-card" ref={stepRefs.step2}>
+            <div className="step-header">
+              <div className="step-number-container">
+                <span className="step-number">2</span>
+              </div>
+              <div className="step-title">
+                <h2>AI Solution 확인</h2>                
+              </div>
+            </div>
+
+            <div className="step-body">
+              <div className="step-section">
+                <h3><i className="fas fa-comment"></i> 단계 설명</h3>
+                <ol className="step-list">
+                  <p className="step-description">개발한 솔루션이 AI Conductor에 정상적으로 등록되었는지 확인하는 단계입니다.</p>                                      
+                </ol>
+                <h3><i className="fas fa-tasks"></i> 수행 단계</h3>
+                <ol className="step-list">
+                  <li>
+                    웹 브라우저에서 AI Conductor URL을 접속하여 제공 받은 계정으로 로그인합니다.
+                    <br />
+                    <strong>URL:</strong> <a href="https://aicond.try-mellerikat.com" target="_blank">https://aicond.try-mellerikat.com</a>
+                  </li>
+                  <li>좌측 메뉴에서 "AI Solution" 탭을 선택합니다.</li>
+                  <li>등록한 솔루션이 목록에 나타나는지 확인합니다.</li>
+                  <li>솔루션 카드를 클릭하면 솔루션의 상세 정보를 확인할 수 있습니다. 솔루션 관리를 위한 자세한 기능은 <a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_conductor/ai_solution/manage_ai_solution">여기서</a> 확인하세요.</li>
+                </ol>
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">AI Conductor 솔루션 목록 화면</div>
+                <img src="/try/images/try_mellerikat_guide/customer_guide/step2-1.png" alt="AI Conductor 솔루션 목록 화면" />
+              </div>              
+
+              <div className="step-navigation-buttons">
+                <a href="#step1" className="prev-btn" onClick={(e) => handleStepClick(e, 'step1')}>
+                  <i className="fas fa-arrow-left"></i> 이전 단계
+                </a>
+                <a href="#step3" className="next-btn" onClick={(e) => handleStepClick(e, 'step3')}>
+                  다음 단계: Edge Conductor 접속 <i className="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 3 */}
+          <div id="step3" className="step-card" ref={stepRefs.step3}>
+            <div className="step-header">
+              <div className="step-number-container">
+                <span className="step-number">3</span>
+              </div>
+              <div className="step-title">
+                <h2>Edge Conductor 접속</h2>                
+              </div>
+            </div>
+
+            <div className="step-body">
+              <div className="step-section">
+                <h3><i className="fas fa-comment"></i> 단계 설명</h3>
+                <ol className="step-list">
+                  <p className="step-description">실제 모델 학습, 배포, 추론이 이루어지는 <a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/">Edge Conductor</a>에 접속하는 단계입니다. <br />
+                  AI Conductor에서 선택한 솔루션을 기반으로 데이터 관리부터 모델 학습 및 배포, Edge App의 관리까지 대부분의 작업이 여기서 이루어집니다.</p>                                      
+                </ol>
+                <h3><i className="fas fa-tasks"></i> 수행 단계</h3>
+                <ol className="step-list">
+                  <li>
+                    웹 브라우저에서 Edge Conductor URL을 접속하여 제공 받은 계정으로 로그인합니다.
+                    <br />
+                    <strong>URL:</strong> <a href="https://edgecond.try-mellerikat.com" target="_blank">https://edgecond.try-mellerikat.com</a>
+                  </li>
+                  <li>Edge Conductor 메인 화면을 확인합니다.</li>
+                </ol>
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">Edge Conductor 로그인 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/edgeconductor_login.png" alt="Edge Conductor 로그인 화면" />
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">Edge Conductor 메인 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/edgeconductor_main.png" alt="Edge Conductor 메인 화면" />
+              </div>
+
+              <div className="note-box tip-box">
+                Edge Conductor에서는 데이터 업로드, 모델 학습, 배포, 추론 등 대부분의 작업이 수행됩니다. 좌측 내비게이션 메뉴를 이용하여 각 기능에 쉽게 접근할 수 있습니다.
+              </div>
+
+              <div className="step-navigation-buttons">
+                <a href="#step2" className="prev-btn" onClick={(e) => handleStepClick(e, 'step2')}>
+                  <i className="fas fa-arrow-left"></i> 이전 단계
+                </a>
+                <a href="#step4" className="next-btn" onClick={(e) => handleStepClick(e, 'step4')}>
+                  다음 단계: 데이터셋 업로드 <i className="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 4 */}
+          <div id="step4" className="step-card" ref={stepRefs.step4}>
+            <div className="step-header">
+              <div className="step-number-container">
+                <span className="step-number">4</span>
+              </div>
+              <div className="step-title">
+                <h2>데이터셋 업로드 (선택사항)</h2>
+              </div>
+            </div>
+
+            <div className="step-body">
+              <div className="step-section">
+                <h3><i className="fas fa-comment"></i> 단계 설명</h3>
+                <ol className="step-list">
+                  <p className="step-description">모델 학습에 사용할 데이터를 Edge Conductor에 업로드하는 단계입니다. mellerikat은 샘플 데이터를 제공하지만, 실제 비즈니스 문제에 솔루션을 적용해보고 싶으면 자체 데이터를 사용해도 됩니다. 이 단계에서는 선택한 솔루션에 적합한 형식으로 데이터를 업로드해야 합니다. <br />
+                  데이터셋 기능에 대한 자세한 내용은 <a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/dataset/">여기서</a> 확인하세요.</p>                                                        
+                </ol>
+                <h3><i className="fas fa-tasks"></i> 수행 단계</h3>
+                <ol className="step-list">
+                  <li>Edge Conductor 메뉴 좌측에 "Data" 탭을 클릭합니다.</li>
+                  <li>"+New Dataset" 버튼을 클릭합니다.</li>
+                  <li>
+                    데이터 속성을 설정합니다.
+                    <ul>
+                      <li>데이터셋 이름 입력 및 'Check Duplicate' 버튼으로 중복 확인</li>
+                      <li>설명, Tag (선택사항)</li>
+                      <li>Solution: 솔루션 선택</li>
+                      <li>Data Source: 데이터 업로드 방식(체험의 경우 Local 선택)</li>
+                    </ul>
+                  </li>
+                  <li>하단 File Upload Guide에 따라 파일을 업로드합니다.</li>
+                  <li>"Save" 버튼을 클릭하여 파일 업로드를 완료합니다.</li>
+                </ol>
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">데이터셋 관리 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/dataset_main.png" alt="데이터셋 관리 화면" />
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">데이터셋 설정 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/dataset_info.png" alt="데이터셋 설정 화면" />
+              </div>
+
+              <div className="note-box info-box">
+                TCR이나 VAD 튜토리얼 코드를 사용하는 경우에는 샘플 데이터를 사용할 수 있어 이 단계를 건너뛸 수 있습니다. 사용자 정의 솔루션의 경우 데이터셋 형식은 선택한 솔루션의 요구사항을 준수해야 합니다.
+              </div>
+
+              <div className="step-navigation-buttons">
+                <a href="#step3" className="prev-btn" onClick={(e) => handleStepClick(e, 'step3')}>
+                  <i className="fas fa-arrow-left"></i> 이전 단계
+                </a>
+                <a href="#step5" className="next-btn" onClick={(e) => handleStepClick(e, 'step5')}>
+                  다음 단계: Stream 생성 <i className="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 5 */}
+          <div id="step5" className="step-card" ref={stepRefs.step5}>
+            <div className="step-header">
+              <div className="step-number-container">
+                <span className="step-number">5</span>
+              </div>
+              <div className="step-title">
+                <h2>Stream 생성</h2>                
+              </div>
+            </div>
+
+            <div className="step-body">
+              <div className="step-section">
+                <h3><i className="fas fa-comment"></i> 단계 설명</h3>
+                <ol className="step-list">
+                  <p className="step-description">Stream은 모델 학습과 배포를 위한 워크플로우를 정의하는 파이프라인 단위입니다. 이 단계에서는 선택한 솔루션을 기반으로 Stream을 생성하고, 모델 학습에 필요한 파라미터를 설정합니다. 하나의 Stream은 하나의 모델 라이프사이클을 관리합니다. Stream에 대한 자세한 내용은 <a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/streams/">여기서</a> 확인하세요.</p>
+                </ol>
+                <h3><i className="fas fa-tasks"></i> 수행 단계</h3>
+                <ol className="step-list">
+                  <li>Edge Conductor 좌측 메뉴에서 "Streams" 탭을 클릭합니다.</li>
+                  <li>"+ New Stream" 버튼을 클릭합니다.</li>
+                  <li>
+                    스트림 정보를 입력합니다.
+                    <ul>
+                      <li>솔루션 선택 (AI Conductor에서 확인한 솔루션 중 선택)</li>
+                      <li>스트림 이름 (고유한 이름 입력)</li>
+                      <li>AI Solution 파라미터 설정 : 이 파라미터는 솔루션마다 다르며, 아래 링크를 참조하면 각 파라미터에 대한 자세한 설명을 확인할 수 있습니다.</li>
+                      <li><a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_contents/tcr/parameter" target="_blank">TCR 파라미터 설명으로 가기</a> / <a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_contents/vad/parameter" target="_blank">VAD 파라미터 설명으로 가기</a></li>                      
+                    </ul>
+                  </li>
+                  <li>"Save" 버튼을 클릭합니다.</li>
+                </ol>
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">Stream 생성 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/stream_step1.png" alt="Stream 생성 화면" />
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">Stream 파라미터 설정 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/stream_step2.png" alt="Stream 파라미터 설정 화면" />
+              </div>
+
+              <div className="note-box tip-box">
+                스트림은 데이터 학습과 배포를 위한 파이프라인을 의미합니다. 이름은 프로젝트를 식별할 수 있는 의미 있는 이름을 사용하세요.
+              </div>
+
+              <div className="step-navigation-buttons">
+                <a href="#step4" className="prev-btn" onClick={(e) => handleStepClick(e, 'step4')}>
+                  <i className="fas fa-arrow-left"></i> 이전 단계
+                </a>
+                <a href="#step6" className="next-btn" onClick={(e) => handleStepClick(e, 'step6')}>
+                  다음 단계: 학습 요청 및 결과 확인 <i className="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 6 */}
+          <div id="step6" className="step-card" ref={stepRefs.step6}>
+            <div className="step-header">
+              <div className="step-number-container">
+                <span className="step-number">6</span>
+              </div>
+              <div className="step-title">
+                <h2>학습 요청 및 결과 확인</h2>                
+              </div>
+            </div>
+
+            <div className="step-body">
+              <div className="step-section">
+                <h3><i className="fas fa-comment"></i> 단계 설명</h3>
+                <ol className="step-list">
+                  <p className="step-description">생성한 Stream을 대상으로 실제 모델 <a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/streams/request_model_training">학습을 요청</a>하고 <a href="https://mellerikat.com/user_guide/data_scientist_guide/ai_conductor/inf_model/">진행 상태를 모니터링</a>하는 단계입니다. 이 과정에서 선택한 솔루션의 알고리즘이 데이터를 분석하고 패턴을 학습하여 모델을 생성하며, 학습이 완료되면 AI Conductor에서 모델의 학습 상태를 확인할 수 있습니다.</p>
+                </ol>
+                <h3><i className="fas fa-tasks"></i> 수행 단계</h3>
+                <ol className="step-list">
+                  <li>생성된 스트림 목록에서 원하는 스트림을 선택합니다.</li>
+                  <li>
+                    "Training" 버튼을 클릭합니다.
+                    <ul>
+                      <li>샘플 데이터로 학습할 경우 각 솔루션에 맞는 데이터셋을 선택합니다. (TCR - TCR dataset / VAD - VAD dataset)</li>
+                      <li>사용자가 업로드한 데이터로 학습할 경우 Dataset에 업로드한 데이터를 선택</li>
+                      <li>
+                        학습을 위한 Resource를 선택합니다.
+                        <ul>
+                          <li>STANDARD : 샘플 코드를 활용하거나 학습 리소스가 많이 필요하지 않을 경우 사용</li>
+                          <li>HIGH : 학습 리소스가 많이 필요한 커스텀 코드를 사용하는 경우 사용</li>                          
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    학습 완료 후 Stream Status 정보를 확인하고, Stream의 Status가 "Training"에서 "Ready to Deploy"로 바뀌었는지 확인합니다.
+                    <ul>
+                      <li>Training : 학습 중</li>
+                      <li>Read to Deploy : 학습 완료</li>
+                      <li>Faild : 학습 실패 (학습 오류가 발생한 경우 AI Conductor - Inf Model - Train Log에 Log로 오류 원인 파악이 가능합니다.)</li>
+                    </ul>
+                  </li>
+                  <li>
+                    학습 정보를 AI Conductor에서 확인합니다.
+                    <ul>
+                      <li>AI Conductor의 좌측 메뉴인 Inf.Model 탭을 통해 Stream 학습 정보 확인</li>
+                      <li>Train Log 버튼: 학습 파이프라인 수행 로그</li>
+                    </ul>
+                  </li>
+                </ol>
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">학습 데이터셋 선택</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/train_dataset.png" alt="학습 데이터셋 선택" />
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">학습 결과 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/train_status.png" alt="학습 결과 화면" />
+              </div>
+
+              <div className="note-box info-box">
+                학습 시간은 데이터 크기와 솔루션 복잡도에 따라 달라질 수 있습니다. 학습이 완료되면 상태가 "Ready to Deploy"로 변경됩니다.
+              </div>
+
+              <div className="step-navigation-buttons">
+                <a href="#step5" className="prev-btn" onClick={(e) => handleStepClick(e, 'step5')}>
+                  <i className="fas fa-arrow-left"></i> 이전 단계
+                </a>
+                <a href="#step7" className="next-btn" onClick={(e) => handleStepClick(e, 'step7')}>
+                  다음 단계: Edge SDK 실행 및 모델 배포 <i className="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 7 */}
+          <div id="step7" className="step-card" ref={stepRefs.step7}>
+            <div className="step-header">
+              <div className="step-number-container">
+                <span className="step-number">7</span>
+              </div>
+              <div className="step-title">
+                <h2>Edge SDK 실행 및 모델 배포</h2>                
+              </div>
+            </div>
+
+            <div className="step-body">
+              <div className="step-section">
+                <h3><i className="fas fa-comment"></i> 단계 설명</h3>
+                <ol className="step-list">
+                  <p className="step-description">Edge SDK는 사용자의 로컬 환경에 실제 Edge App을 구성하고 실행할 수 있게 해주는 핵심 도구입니다. 이 단계에서는 Google Colab 템플릿을 통해 Edge SDK를 설치하고 실행함으로써, 실제 프로덕션 환경과 유사한 Edge 환경을 구축합니다. 모델 배포 과정에서는 Edge Conductor가 학습된 모델 가중치와 추론 코드를 패키징하여 Edge App에 전송하며, 이 과정이 완료되면 Edge App은 즉시 추론 요청을 처리할 준비가 됩니다. 배포 상태는 Edge Conductor에서 실시간으로 모니터링할 수 있으며, 배포가 완료되면 이후 추론 데이터를 전송하여 실제 예측을 수행할 수 있습니다. 모델 배포에 대한 자세한 내용은 <a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/streams/deploy_model">여기서</a> 확인하세요.</p>
+                </ol>
+                <h3><i className="fas fa-tasks"></i> 수행 단계</h3>
+                <ol className="step-list">
+                  <li>Google Colab 내 Edge SDK 실행 가이드를 수행합니다.</li>
+                  <li>Edge App에서 설치한 Edge를 등록합니다.</li>
+                  <li>Edge Conductor의 Edges 탭에서 등록된 Edge를 확인합니다.</li>
+                  <li>생성된 스트림 목록에서 원하는 스트림을 선택합니다.</li>
+                  <li>"Deploy" 버튼을 클릭합니다.</li>
+                  <li>배포하고자 하는 Edge App을 선택합니다.</li>
+                  <li>"Deploy" 버튼을 클릭합니다.</li>
+                  <li>
+                    배포 상태를 확인합니다. "Deployed" 상태가 되면 배포가 완료된 것임을 의미합니다.
+                    <ul>
+                      <li>Deploying: 배포 진행 중</li>
+                      <li>Deployed: 배포 완료</li>
+                      <li>Failed: 배포 실패</li>
+                    </ul>
+                  </li>
+                  <li>Google Colab의 추론 데이터 전달 가이드를 수행합니다.</li>
+                </ol>
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">모델 배포를 위한 Edge 선택 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/deploy_edge.png" alt="모델 배포를 위한 Edge 선택 화면" />
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">배포 상태 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/deploy_status.png" alt="배포 상태 화면" />
+              </div>
+
+
+              <div className="note-box warning-box">
+                배포가 실패할 경우, Edge App의 상태를 확인하고 정상적으로 동작 중인지 확인하세요. 추론 데이터는 모델이 처리할 수 있는 형식으로 준비해야 합니다. 문제가 지속되면 관리자에게 문의하시기 바랍니다.
+              </div>
+
+              <div className="step-navigation-buttons">
+                <a href="#step6" className="prev-btn" onClick={(e) => handleStepClick(e, 'step6')}>
+                  <i className="fas fa-arrow-left"></i> 이전 단계
+                </a>
+                <a href="#step8" className="next-btn" onClick={(e) => handleStepClick(e, 'step8')}>
+                  다음 단계: 추론 결과 확인 <i className="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 8 */}
+          <div id="step8" className="step-card" ref={stepRefs.step8}>
+            <div className="step-header">
+              <div className="step-number-container">
+                <span className="step-number">8</span>
+              </div>
+              <div className="step-title">
+                <h2>추론 결과 확인</h2>                
+              </div>
+            </div>
+
+            <div className="step-body">
+              <div className="step-section">
+                <h3><i className="fas fa-comment"></i> 단계 설명</h3>
+                <ol className="step-list">
+                  <p className="step-description"><a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_app/">Edge App</a>에서 처리된 추론 결과를 확인하는 단계입니다. 배포된 모델이 업로드한 데이터를 처리하여 예측 결과를 생성하면, 이를 확인하고 분석할 수 있습니다. 이 단계에서 모델의 실제 성능과 유용성을 평가할 수 있습니다. Edge App 추론 결과의 자세한 내용은 <a href="https://mellerikat.com/user_guide/ai_operator_guide/edge_conductor/edges/monitor_edges">여기서</a> 확인하세요.</p>
+                </ol>
+                <h3><i className="fas fa-tasks"></i> 수행 단계</h3>
+                <ol className="step-list">
+                  <li>Edge Conductor 좌측 메뉴에서 "Edges" 탭을 클릭합니다.</li>
+                  <li>원하는 Edge의 이름을 클릭합니다.</li>
+                  <li>
+                    하단 Detail 화면을 통해 추론 결과를 확인합니다.
+                    <ul>
+                      <li>Output 버튼: 솔루션의 출력 결과</li>
+                      <li>log 버튼: 추론 파이프라인 수행 로그</li>                      
+                    </ul>
+                  </li>
+                </ol>
+              </div>
+
+              <div className="image-container">
+                <div className="image-caption">Edge 목록 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/edge_main.png" alt="Edge 목록 화면" />
+              </div>
+
+
+              <div className="image-container">
+                <div className="image-caption">추론 결과 확인 화면</div>
+                <img src="/try/images/try_mellerikat_guide/quick_guide/inf_results.png" alt="추론 결과 확인 화면" />
+              </div>              
+
+              <div className="step-navigation-buttons">
+                <a href="#step7" className="prev-btn" onClick={(e) => handleStepClick(e, 'step7')}>
+                  <i className="fas fa-arrow-left"></i> 이전 단계
+                </a>
+                <a href="#step1" className="home-btn" onClick={(e) => handleStepClick(e, 'step1')}>
+                  처음으로 <i className="fas fa-home"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+};
